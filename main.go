@@ -17,6 +17,11 @@ import (
 
 var display uc8151.Device
 var led machine.Pin
+var a_btn machine.Pin
+var b_btn machine.Pin
+var c_btn machine.Pin
+var up_btn machine.Pin
+var down_btn machine.Pin
 
 var black = color.RGBA{1, 1, 1, 255}
 var white = color.RGBA{0, 0, 0, 255}
@@ -26,6 +31,18 @@ var h int16 = 128
 func main() {
 	led = machine.LED
 	led.Configure(machine.PinConfig{Mode: machine.PinOutput})
+
+	a_btn = machine.BUTTON_A
+	a_btn.Configure(machine.PinConfig{Mode: machine.PinInput})
+	b_btn = machine.BUTTON_B
+	b_btn.Configure(machine.PinConfig{Mode: machine.PinInput})
+	c_btn = machine.BUTTON_C
+	c_btn.Configure(machine.PinConfig{Mode: machine.PinInput})
+	up_btn = machine.BUTTON_UP
+	up_btn.Configure(machine.PinConfig{Mode: machine.PinInput})
+	down_btn = machine.BUTTON_DOWN
+	down_btn.Configure(machine.PinConfig{Mode: machine.PinInput})
+
 	machine.SPI0.Configure(machine.SPIConfig{
 		Frequency: 12000000,
 		SCK:       machine.EPD_SCK_PIN,
@@ -35,11 +52,12 @@ func main() {
 	display = uc8151.New(machine.SPI0, machine.EPD_CS_PIN, machine.EPD_DC_PIN, machine.EPD_RESET_PIN, machine.EPD_BUSY_PIN)
 	display.Configure(uc8151.Config{
 		Rotation: uc8151.ROTATION_270,
-		Speed:    uc8151.TURBO,
+		Speed:    uc8151.MEDIUM,
 		Blocking: true,
 	})
 
 	for {
+		adventure()
 		myNameIs("@_conejo")
 		blinky("TECHNOLOGIST", "for hire")
 		myNameIs("@_conejo")
@@ -321,6 +339,25 @@ func dvd(text string) {
 		}
 		if y <= 0 {
 			dy = d
+		}
+	}
+}
+
+func adventure() {
+	display.ClearBuffer()
+	display.Display()
+
+	tinyfont.WriteLine(&display, &fonts.TinySZ8pt7b, 0, 128-28, "[A] Option A of dialogue", black)
+	tinyfont.WriteLine(&display, &fonts.TinySZ8pt7b, 0, 128-18, "B- Option B of dialogue", black)
+	tinyfont.WriteLine(&display, &fonts.TinySZ8pt7b, 0, 128-10, "(C) Option C of dialogue", black)
+	display.Display()
+	display.WaitUntilIdle()
+
+	for {
+		if a_btn.Get() {
+			led.High()
+		} else {
+			led.Low()
 		}
 	}
 }
