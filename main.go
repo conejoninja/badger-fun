@@ -32,6 +32,10 @@ func main() {
 	led = machine.LED
 	led.Configure(machine.PinConfig{Mode: machine.PinOutput})
 
+	led3v3 := machine.ENABLE_3V3
+	led3v3.Configure(machine.PinConfig{Mode: machine.PinOutput})
+	led3v3.High()
+
 	a_btn = machine.BUTTON_A
 	a_btn.Configure(machine.PinConfig{Mode: machine.PinInput})
 	b_btn = machine.BUTTON_B
@@ -57,7 +61,7 @@ func main() {
 	})
 
 	for {
-		adventure()
+		//adventure()
 		myNameIs("@_conejo")
 		blinky("TECHNOLOGIST", "for hire")
 		myNameIs("@_conejo")
